@@ -1,0 +1,7 @@
+{
+  "name": "eventaro-movil",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
