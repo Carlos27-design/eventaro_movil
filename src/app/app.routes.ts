@@ -9,6 +9,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: '',
+    loadComponent: () =>
+      import('./lector-qr/components/lector-qr.component').then(
+        (m) => m.LectorQrComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'login',
     pathMatch: 'full',

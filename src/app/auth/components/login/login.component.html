@@ -7,10 +7,14 @@
     </ion-card-header>
 
     <ion-card-content class="login-card__content">
-      <form class="login-card__form">
+      <form class="login-card__form" [formGroup]="loginForm">
         <div class="login-card__form-item">
           <ion-label>Correo Electrónico:</ion-label>
-          <ion-input type="email" placeholder="Ingresa tu correo"></ion-input>
+          <ion-input
+            type="email"
+            placeholder="Ingresa tu correo"
+            formControlName="email"
+          ></ion-input>
         </div>
 
         <div class="login-card__form-item">
@@ -18,10 +22,16 @@
           <ion-input
             type="password"
             placeholder="Ingresa tu contraseña"
+            formControlName="password"
           ></ion-input>
         </div>
 
-        <ion-button expand="block" class="login-card__form-button">
+        <ion-button
+          type="submit"
+          (click)="login()"
+          expand="block"
+          class="login-card__form-button"
+        >
           Iniciar sesión
         </ion-button>
       </form>
