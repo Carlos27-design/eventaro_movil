@@ -23,9 +23,7 @@
               "browser": ""
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -81,9 +79,6 @@
             },
             "development": {
               "buildTarget": "app:build:development"
-            },
-            "ci": {
-              "progress": false
             }
           },
           "defaultConfiguration": "development"
@@ -129,9 +124,7 @@
     }
   },
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
+    "schematicCollections": ["@ionic/angular-toolkit"],
     "analytics": "490b7799-26f7-4450-8033-b6329e3efbc7"
   },
   "schematics": {

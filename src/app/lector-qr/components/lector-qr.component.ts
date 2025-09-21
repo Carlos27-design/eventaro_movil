@@ -1,13 +1,14 @@
-import { IonicModule, ToastController } from '@ionic/angular';
-import { Component, ViewChild, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import {
-  NgxScannerQrcodeService,
   NgxScannerQrcodeComponent,
+  ScannerQRCodeResult,
 } from 'ngx-scanner-qrcode';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { Auth } from '../../auth/services/auth';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { logOutOutline } from 'ionicons/icons';
+import { Inscription } from '../services/inscription';
 
 @Component({
   selector: 'app-lector-qr',
@@ -17,41 +18,63 @@ import { logOutOutline } from 'ionicons/icons';
   imports: [IonicModule, NgxScannerQrcodeComponent],
 })
 export class LectorQrComponent {
-  // ====== INYECCIONES ======
   private readonly _auth = inject(Auth);
   private readonly _router = inject(Router);
+  private readonly _inscription = inject(Inscription);
   private readonly _toast = inject(ToastController);
 
-  public scanResult = signal<string | null>(null);
-
+  // ViewChild como signal
   public scanner = viewChild(NgxScannerQrcodeComponent);
+
+  ngOnInit() {
+    addIcons({ 'log-out-outline': logOutOutline });
+  }
 
   public logout() {
     this._auth.logout();
     this._router.navigateByUrl('/login');
   }
 
-  ngOnInit() {
-    addIcons({
-      'log-out-outline': logOutOutline,
-    });
-  }
-
   ionViewWillEnter() {
-    const scanInstance = this.scanner();
-    if (scanInstance) {
-      scanInstance.start();
+    const scan = this.scanner();
+    if (scan) {
+      scan.start();
+
+      // Suscribirse a jdata
+      scan.data.subscribe((results: ScannerQRCodeResult[]) => {
+        if (results.length > 0) {
+          const qrValue = results[0].value; // aquí está tu QR
+          this.handleQR(qrValue);
+        }
+      });
     }
   }
 
   ionViewWillLeave() {
-    const scanInstance = this.scanner();
-    if (scanInstance) {
-      scanInstance.stop();
+    this.scanner()?.stop();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
   }
 
-  public scanSuccess(event: any) {
-    this.scanResult.set(event);
+  private async handleQR(qrValue: any) {
+    try {
+      const inscription = await this._inscription
+        .acceptInscription(qrValue)
+        .toPromise();
+      const toast = await this._toast.create({
+        message: `Inscripción Aceptada: ${inscription.event.name}`,
+        duration: 2000,
+        position: 'bottom',
+      });
+      toast.present();
+    } catch (err: any) {
+      const toast = await this._toast.create({
+        message: `Error: ${err.message || 'No se pudo aceptar'}`,
+        duration: 2000,
+        position: 'bottom',
+      });
+      toast.present();
+    }
   }
 }

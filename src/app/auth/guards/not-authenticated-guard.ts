@@ -9,9 +9,17 @@ export const notAuthenticatedGuard: CanMatchFn = async (route, segments) => {
 
   const isAuthenticated = await firstValueFrom(authService.checkStatus());
 
+  const admin = authService.isAdmin();
+  const organizer = authService.isOrganizer();
+
   if (!isAuthenticated) {
     router.navigateByUrl('/login');
     return false;
+  }
+
+  if (admin && organizer) {
+    router.navigateByUrl('/');
+    return true;
   }
 
   return true;

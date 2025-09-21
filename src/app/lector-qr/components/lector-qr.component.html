@@ -11,7 +11,10 @@
 
 <ion-content class="ion-padding">
   <ngx-scanner-qrcode
+    [fps]="30"
+    [vibrate]="300"
+    [isBeep]="true"
+    [isMasked]="true"
     #scanner
-    (scanSuccess)="scanSuccess($event)"
   ></ngx-scanner-qrcode>
 </ion-content>
